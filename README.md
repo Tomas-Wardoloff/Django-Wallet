@@ -1,4 +1,4 @@
-# Virtual Wallet App
+# Django-Wallet 
 
 This is a personal project where I design a virtual wallet to track personal expenses and incomes. This is a rework of a previous project, but this time the idea is to rebuild the project using [Django](https://www.djangoproject.com) to improve my skills as a Backend Developer. Here is the link to the first approach to this project: [Virtual-Wallet](https://github.com/Tomas-Wardoloff/Virtual-Wallet/)
 
