@@ -1,5 +1,7 @@
 from django.db import models
 
+from djmoney.models.fields import MoneyField
+
 from authentication.models import CustomUser
 
 
@@ -8,7 +10,7 @@ class Account(models.Model):
     Represents a user's account.
 
     Attributes:
-        balance (DecimalField): The current balance of the account.
+        balance (MoneyField): The current balance of the account.
         name (CharField): The name of the account.
         user (ForeignKey): Reference to the CustomUser who owns the account.
 
@@ -18,7 +20,7 @@ class Account(models.Model):
     Methods:
         __str__: Returns a string representation of the account.
     """    
-    balance = models.DecimalField(max_digits=10, decimal_places=2)
+    balance = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
     name = models.CharField(max_length=50)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
