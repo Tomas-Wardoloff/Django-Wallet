@@ -1,5 +1,7 @@
 from django.db import models
 
+from djmoney.models.fields import MoneyField
+
 from accounts.models import Account
 from authentication.models import CustomUser
 from categories.models import IncomeCategory, ExpenseCategory
@@ -9,7 +11,7 @@ class Income(models.Model):
     """
     Model for income transactions
     Atributes:
-        amount: (DecimalField): The amount of money received.
+        amount: (MoneyField): The amount of money received.
         date: (DateField): The date when the income was received.
         user: (ForeignKey to CustomUser): Refrence to the CustomUser who received the income.
         user_account: (ForeignKey to Account): Refrence to the Account where the income was received.
@@ -22,7 +24,7 @@ class Income(models.Model):
     Methods:
         __str__: Returns a string representation of the income.
     """
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    amount = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
     date = models.DateField()
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     user_account = models.ForeignKey(Account, on_delete=models.CASCADE)
@@ -40,7 +42,7 @@ class Expense(models.Model):
     """
     Model for expense transactions
     Attributes:
-        amount: (DecimalField): The amount of money spent.
+        amount: (MoneyField): The amount of money spent.
         date: (DateField): The date when the expense was made.
         user: (ForeignKey to CustomUser): Reference to the CustomUser who made the expense.
         user_account: (ForeignKey to Account): Reference to the Account where the expense was made.
@@ -53,7 +55,7 @@ class Expense(models.Model):
     Methods:
         __str__: Returns a string representation of the expense.
     """
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    amount = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
     date = models.DateField()
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     user_account = models.ForeignKey(Account, on_delete=models.CASCADE)
@@ -71,7 +73,7 @@ class Transfer(models.Model):
     """
     Model for transfer transactions
     Attributes:
-        amount: (DecimalField): The amount of money transferred.
+        amount: (MoneyField): The amount of money transferred.
         date: (DateField): The date when the transfer was made.
         user: (ForeignKey to CustomUser): Reference to the CustomUser who initiated the transfer.
         from_user_account: (ForeignKey to Account): Reference to the Account where the money was transferred from.
@@ -84,7 +86,7 @@ class Transfer(models.Model):
     Methods:
         __str__: Returns a string representation of the transfer.
     """
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    amount = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
     date = models.DateField()
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     from_user_account = models.ForeignKey(
