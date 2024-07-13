@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser, PermissionsMixin
 
 from .managers import CustomUserManager
 
+
 class CustomUser(AbstractUser, PermissionsMixin):
     """
     CustomUser class representing a custom user model in Django.
@@ -35,14 +36,20 @@ class CustomUser(AbstractUser, PermissionsMixin):
 
     Methods:
         - __str__: Returns a string representation of the user.
+        - save: Overrides the save method to set the username as 'user_<email>' when saving the user.
     """
     email = models.EmailField(help_text='User email address',
                               verbose_name='Email', unique=True, blank=False, null=False)
-    
+    username = models.CharField(max_length=150, blank=True, null=True)
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name']
-    
+
     objects = CustomUserManager()
-    
+
     def __str__(self):
         return f'User(ID: {self.id}, Email: {self.email})'
+
+    def save(self, *args, **kwargs):
+        self.username = f"user_{self.email}"
+        super().save(*args, **kwargs)
