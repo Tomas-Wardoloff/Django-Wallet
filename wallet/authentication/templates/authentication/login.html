@@ -1,11 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-</head>
-<body>
+{% extends 'authentication/layout.html' %}
+
+{% block title %}Login{% endblock title %}
+
+{% block content %}
     <h1>Login</h1>
     {% if messages %}
         {% for message in messages %}
@@ -18,5 +15,4 @@
         <button type="submit">Sign In</button>
     </form>
     <a href="{% url 'register' %}">Dont have an account</a>
-</body>
-</html>
+{% endblock %}
