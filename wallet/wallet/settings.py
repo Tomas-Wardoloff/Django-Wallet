@@ -46,6 +46,7 @@ DJANGO_APPS = [
 
 THIRD_PARTY_APPS = [
     'djmoney',
+    'rest_framework',
 ]
 
 LOCAL_APPS = [
