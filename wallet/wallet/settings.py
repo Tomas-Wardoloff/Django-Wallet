@@ -54,6 +54,7 @@ LOCAL_APPS = [
     'authentication.apps.AuthenticationConfig',
     'categories.apps.CategoriesConfig',
     'transactions.apps.TransactionsConfig',
+    'api.apps.ApiConfig',
 ]
 
 INSTALLED_APPS = LOCAL_APPS + DJANGO_APPS + THIRD_PARTY_APPS
