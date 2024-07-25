@@ -1,8 +1,3 @@
-from django.shortcuts import redirect
+from django.shortcuts import render
 
-
-def redirect_to_login(request):
-    """
-    Redirects the user to the login page.
-    """
-    return redirect('login')
+# Create your views here.
