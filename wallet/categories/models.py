@@ -22,7 +22,8 @@ class IncomeCategory(models.Model):
 
     name = models.CharField(max_length=50)
     is_default = models.BooleanField(default=False)
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, blank=True, null=True)
 
     class Meta():
         db_table = 'income_categories'
@@ -51,7 +52,7 @@ class ExpenseCategory(models.Model):
 
     name = models.CharField(max_length=50)
     is_default = models.BooleanField(default=False)
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, blank=True, null=True)
 
     class Meta():
         db_table = 'expense_categories'
