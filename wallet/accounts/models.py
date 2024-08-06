@@ -19,13 +19,15 @@ class Account(models.Model):
 
     Methods:
         __str__: Returns a string representation of the account.
-    """    
-    balance = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
+    """
+    balance = MoneyField(max_digits=10, decimal_places=2,
+                         default_currency='USD')
     name = models.CharField(max_length=50)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
     class Meta():
         db_table = 'accounts'
+        unique_together = ('user', 'name')
 
     def __str__(self):
         return f'Account(ID: {self.id}, Name: {self.name}, User: {self.user})'
