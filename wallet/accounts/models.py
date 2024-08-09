@@ -30,4 +30,8 @@ class Account(models.Model):
         unique_together = ('user', 'name')
 
     def __str__(self):
-        return f'Account(ID: {self.id}, Name: {self.name}, User: {self.user})'
+        return f'Account(ID: {self.id}, Name: {self.name}, User: {self.user.email})'
+
+    def update_balance(self, amount):
+        self.balance += amount
+        self.save()
