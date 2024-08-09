@@ -48,7 +48,7 @@ class CustomUser(AbstractUser, PermissionsMixin):
     objects = CustomUserManager()
 
     def __str__(self):
-        return f'User(ID: {self.id}, Email: {self.email})'
+        return self.email
 
     def save(self, *args, **kwargs):
         self.username = f"user_{self.email}"
