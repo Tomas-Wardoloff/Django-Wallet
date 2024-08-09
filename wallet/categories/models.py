@@ -29,9 +29,7 @@ class IncomeCategory(models.Model):
         db_table = 'income_categories'
 
     def __str__(self) -> str:
-        if self.is_default:
-            return f"IncomeCategory(ID: {self.id}, Name: {self.name}, Default: {self.is_default})"
-        return f"IncomeCategory(ID: {self.id}, Name: {self.name}, User: {self.user})"
+        return self.name
 
 
 class ExpenseCategory(models.Model):
@@ -52,12 +50,11 @@ class ExpenseCategory(models.Model):
 
     name = models.CharField(max_length=50)
     is_default = models.BooleanField(default=False)
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, blank=True, null=True)
+    user = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, blank=True, null=True)
 
     class Meta():
         db_table = 'expense_categories'
 
     def __str__(self) -> str:
-        if self.is_default:
-            return f"ExpenseCategory(ID: {self.id}, Name: {self.name}, Default: {self.is_default})"
-        return f"ExpenseCategory(ID: {self.id}, Name: {self.name}, User: {self.user})"
+        return self.name
