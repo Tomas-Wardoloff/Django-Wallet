@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 
 from djmoney.models.fields import MoneyField
 
@@ -35,7 +36,15 @@ class Income(models.Model):
         db_table = 'incomes'
 
     def __str__(self):
-        return f'Income(ID: {self.id}, Amount: ${self.amount}, User: {self.user}, Date: {self.date})'
+        return f'Income(ID: {self.id}, Amount: {self.amount}, User: {self.user}, Date: {self.date})'
+    
+    def clean(self):
+        if self.user != self.user_account.user:
+            raise ValidationError("The account does not belong to the user")
+    
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
 
 
 class Expense(models.Model):
@@ -67,6 +76,14 @@ class Expense(models.Model):
 
     def __str__(self):
         return f'Expense(ID: {self.id}, Amount: ${self.amount}, User: {self.user}, Date: {self.date})'
+    
+    def clean(self):
+        if self.user != self.user_account.user:
+            raise ValidationError("The account does not belong to the user")
+    
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
 
 
 class Transfer(models.Model):
@@ -100,3 +117,11 @@ class Transfer(models.Model):
 
     def __str__(self):
         return f'Transfer(ID: {self.id}, Amount: ${self.amount}, User: {self.user}, Date: {self.date}, From: {self.from_user_account}, To: {self.to_user_account})'
+
+    def clean(self):
+        if self.user != self.from_user_account.user or self.user != self.to_user_account.user:
+            raise ValidationError("The accounts involved do not belong to the user")
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
