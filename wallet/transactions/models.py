@@ -5,18 +5,18 @@ from djmoney.models.fields import MoneyField
 
 from accounts.models import Account
 from authentication.models import CustomUser
-from categories.models import IncomeCategory, ExpenseCategory
+from categories.models import Category
 
 
-class Income(models.Model):
+class Transaction(models.Model):
     """
-    Model for income transactions
+    Model for income or expense transactions
     Atributes:
         amount: (MoneyField): The amount of money received.
         date: (DateField): The date when the income was received.
         user: (ForeignKey to CustomUser): Refrence to the CustomUser who received the income.
         user_account: (ForeignKey to Account): Refrence to the Account where the income was received.
-        category: (ForeignKey to IncomeCategory): The category of the income, linked to IncomeCategory.
+        category: (ForeignKey to Category): The category of the transaction, linked to Category.
         description: (CharField): Optional description of the income.
         
     Meta:
@@ -29,54 +29,18 @@ class Income(models.Model):
     date = models.DateField()
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     user_account = models.ForeignKey(Account, on_delete=models.CASCADE)
-    category = models.ForeignKey(IncomeCategory, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
     description = models.CharField(max_length=100, blank=True, null=True)
 
     class Meta():
-        db_table = 'incomes'
+        db_table = 'transactions'
 
     def __str__(self):
-        return f'Income(ID: {self.id}, Amount: {self.amount}, User: {self.user}, Date: {self.date})'
-    
-    def clean(self):
-        if self.user != self.user_account.user:
-            raise ValidationError("The account does not belong to the user")
-    
-    def save(self, *args, **kwargs):
-        self.clean()
-        super().save(*args, **kwargs)
-
-
-class Expense(models.Model):
-    """
-    Model for expense transactions
-    Attributes:
-        amount: (MoneyField): The amount of money spent.
-        date: (DateField): The date when the expense was made.
-        user: (ForeignKey to CustomUser): Reference to the CustomUser who made the expense.
-        user_account: (ForeignKey to Account): Reference to the Account where the expense was made.
-        category: (ForeignKey to ExpenseCategory): The category of the expense, linked to ExpenseCategory.
-        description: (CharField): Optional description of the expense.
+        if self.category.type == 'Income':
+            return f'Income(ID: {self.id}, Amount: {self.amount}, User: {self.user}, Date: {self.date})'
+        return f'Expense(ID: {self.id}, Amount: {self.amount}, User: {self.user}, Date: {self.date})'
         
-    Meta:
-        db_table: Specifies the name of the database table ('expenses').
-
-    Methods:
-        __str__: Returns a string representation of the expense.
-    """
-    amount = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
-    date = models.DateField()
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    user_account = models.ForeignKey(Account, on_delete=models.CASCADE)
-    category = models.ForeignKey(ExpenseCategory, on_delete=models.CASCADE)
-    description = models.CharField(max_length=100, blank=True, null=True)
-
-    class Meta():
-        db_table = 'expenses'
-
-    def __str__(self):
-        return f'Expense(ID: {self.id}, Amount: ${self.amount}, User: {self.user}, Date: {self.date})'
-    
+        
     def clean(self):
         if self.user != self.user_account.user:
             raise ValidationError("The account does not belong to the user")

@@ -1,36 +1,54 @@
 from rest_framework import serializers
 
-from .models import Expense, Transfer, Income
-from accounts.serializers import AccountSerializer
-from authentication.serializers import CustomUserSerializer
-from categories.serializers import ExpenseCategorySerializer, IncomeCategorySerializer
+from .models import Transaction, Transfer
 
 
-class IncomeSerializer(serializers.ModelSerializer):
-    user = CustomUserSerializer()
-    user_account = AccountSerializer()
-    category = IncomeCategorySerializer()
+class TransactionSerializer(serializers.ModelSerializer):
+    user_email = serializers.SerializerMethodField()
+    account_name = serializers.SerializerMethodField()
+    category_name = serializers.SerializerMethodField()
+    type = serializers.SerializerMethodField()
 
     class Meta:
-        model = Income
-        fields = '__all__'
+        model = Transaction
+        fields = ['id',  'user_email', 'amount', 'date',
+                  'account_name', 'category_name', 'type', 'description']
 
+    def get_user_email(self, obj):
+        return obj.user.email
 
-class ExpenseSerializer(serializers.ModelSerializer):
-    user = CustomUserSerializer()
-    user_account = AccountSerializer()
-    category = ExpenseCategorySerializer()
+    def get_account_name(self, obj):
+        return obj.user_account.name
 
-    class Meta:
-        model = Expense
-        fields = '__all__'
+    def get_category_name(self, obj):
+        return obj.category.name
 
+    def get_type(self, obj):
+        return obj.category.type
 
 class TransferSerializer(serializers.ModelSerializer):
-    user = CustomUserSerializer()
-    from_user_account = AccountSerializer()
-    to_user_account = AccountSerializer()
+    user_email = serializers.SerializerMethodField()
+    account_name = serializers.SerializerMethodField()
+    category_name = serializers.SerializerMethodField()
+    from_account = serializers.SerializerMethodField()
+    to_account = serializers.SerializerMethodField()
 
     class Meta:
         model = Transfer
-        fields = '__all__'
+        fields = ['id',  'user_email', 'amount', 'date',
+                  'from_account', 'to_account', 'category_name', 'description']
+
+    def get_user_email(self, obj):
+        return obj.user.email
+
+    def get_account_name(self, obj):
+        return obj.user_account.name
+
+    def get_category_name(self, obj):
+        return obj.category.name
+
+    def get_from_account(self, obj):
+        return obj.from_user_account.name
+
+    def get_to_account(self, obj):
+        return obj.to_user_account.name
