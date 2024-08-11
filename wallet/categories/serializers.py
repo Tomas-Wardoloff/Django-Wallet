@@ -1,20 +1,12 @@
 from rest_framework import serializers
 
 from authentication.serializers import CustomUserSerializer
-from .models import IncomeCategory, ExpenseCategory
+from .models import Category
 
 
-class IncomeCategorySerializer(serializers.ModelSerializer):
+class CategorySerializer(serializers.ModelSerializer):
     user = CustomUserSerializer()
 
     class Meta:
-        model = IncomeCategory
-        fields = '__all__'
-
-
-class ExpenseCategorySerializer(serializers.ModelSerializer):
-    user = CustomUserSerializer()
-
-    class Meta:
-        model = ExpenseCategory
+        model = Category
         fields = '__all__'

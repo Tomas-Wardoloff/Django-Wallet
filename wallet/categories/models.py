@@ -3,58 +3,35 @@ from django.db import models
 from authentication.models import CustomUser
 
 
-class IncomeCategory(models.Model):
+class Category(models.Model):
     """
-    Represents an income category.
+    Represents an income or expense category.
 
     Attributes:
         name (str): The name of the income category.
         is_default (bool): Indicates whether the income category is a default category.
         user (CustomUser): The user associated with the income category.
+        type (str): The type of the income category.
 
     Meta:
 
-        db_table (str): Specifies the name of the database table ('income_categories').
+        db_table (str): Specifies the name of the database table ('categories').
 
     Methods:
         __str__(): Returns a string representation of the income category.
     """
-
+    CATEGORY_TYPE = [
+        ('Income', 'Income'),
+        ('Expense', 'Expense'),
+    ]
+    
     name = models.CharField(max_length=50)
-    is_default = models.BooleanField(default=False)
     user = models.ForeignKey(
         CustomUser, on_delete=models.CASCADE, blank=True, null=True)
-
+    type = models.CharField(max_length=7, choices=CATEGORY_TYPE)
+    
     class Meta():
-        db_table = 'income_categories'
-
-    def __str__(self) -> str:
-        return self.name
-
-
-class ExpenseCategory(models.Model):
-    """
-    Represents an expense category.
-
-    Attributes:
-        name (str): The name of the expense category.
-        is_default (bool): Indicates whether the category is a default category.
-        user (CustomUser): The user associated with the category.
-
-    Meta:
-        db_table (str): Specifies the name of the database table ('expense_categories').
-
-    Methods:
-        __str__(): Returns a string representation of the expense category.
-    """
-
-    name = models.CharField(max_length=50)
-    is_default = models.BooleanField(default=False)
-    user = models.ForeignKey(
-        CustomUser, on_delete=models.CASCADE, blank=True, null=True)
-
-    class Meta():
-        db_table = 'expense_categories'
+        db_table = 'categories'
 
     def __str__(self) -> str:
         return self.name
