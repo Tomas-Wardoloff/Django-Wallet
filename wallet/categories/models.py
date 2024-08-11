@@ -32,6 +32,7 @@ class Category(models.Model):
     
     class Meta():
         db_table = 'categories'
+        unique_together = ('user', 'name', 'type')
 
     def __str__(self) -> str:
         return self.name
