@@ -1,5 +1,9 @@
 from django.db.models import Q
-from rest_framework import viewsets
+from django.db import IntegrityError
+
+from rest_framework import viewsets, status
+from rest_framework.response import Response
+from rest_framework.exceptions import ValidationError
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 
@@ -28,6 +32,21 @@ class AccountViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Account.objects.filter(user=self.request.user)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        try:
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+            headers = self.get_success_headers(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        except IntegrityError:
+            return Response(
+                {'detail': 'Account with this user and name already exists.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        except ValidationError as e:
+            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
