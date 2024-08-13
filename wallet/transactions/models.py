@@ -42,10 +42,13 @@ class Transaction(models.Model):
         return f'Expense(ID: {self.id}, Amount: {self.amount}, User: {self.user}, Date: {self.date})'
 
     def clean(self):
+        super().clean()
         if self.user != self.user_account.user:
-            raise ValidationError("The account does not belong to the user")
+            raise ValidationError(
+                {'user_account': 'The account does not belong to the user'})
         if self.category.user and self.user != self.category.user:
-            raise ValidationError("The category does not belong to the user")
+            raise ValidationError(
+                {'category': 'The category is not a default category or does not belong to the user'})
 
     def save(self, *args, **kwargs):
         self.clean()
