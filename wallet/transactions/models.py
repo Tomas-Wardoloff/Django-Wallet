@@ -89,9 +89,13 @@ class Transfer(models.Model):
         return f'Transfer(ID: {self.id}, Amount: ${self.amount}, User: {self.user}, Date: {self.date}, From: {self.from_user_account}, To: {self.to_user_account})'
 
     def clean(self):
+        super().clean()
         if self.user != self.from_user_account.user or self.user != self.to_user_account.user:
             raise ValidationError(
-                "The accounts involved do not belong to the user")
+                'The accounts involved do not belong to the user')
+        if self.from_user_account == self.to_user_account:
+            raise ValidationError(
+                'The accounts involved are the same')
 
     def save(self, *args, **kwargs):
         self.clean()
