@@ -43,29 +43,34 @@ class TransactionCreateSerializer(serializers.ModelSerializer):
         return data
 
 
-class TransferSerializer(serializers.ModelSerializer):
-    user_email = serializers.SerializerMethodField()
-    account_name = serializers.SerializerMethodField()
-    category_name = serializers.SerializerMethodField()
-    from_account = serializers.SerializerMethodField()
-    to_account = serializers.SerializerMethodField()
+class TransferDetailSerializer(serializers.ModelSerializer):
+    user = serializers.EmailField(source='user.email', read_only=True)
+    from_user_account = serializers.CharField(source='from_user_account.name')
+    to_user_account = serializers.CharField(source='to_user_account.name')
 
     class Meta:
         model = Transfer
-        fields = ['id',  'user_email', 'amount', 'date',
-                  'from_account', 'to_account', 'category_name', 'description']
+        fields = ['id', 'date', 'amount', 'user',
+                  'from_user_account', 'to_user_account', 'description']
 
-    def get_user_email(self, obj):
-        return obj.user.email
 
-    def get_account_name(self, obj):
-        return obj.user_account.name
+class TransferCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Transfer
+        fields = ['amount', 'date', 'from_user_account',
+                  'to_user_account', 'description']
 
-    def get_category_name(self, obj):
-        return obj.category.name
+    def validate(self, data):
+        user = self.context['request'].user
+        from_user_account = data['from_user_account']
+        to_user_account = data['to_user_account']
 
-    def get_from_account(self, obj):
-        return obj.from_user_account.name
+        if user != from_user_account.user or user != to_user_account.user:
+            raise ValidationError(
+                "The accounts involved do not belong to the user")
 
-    def get_to_account(self, obj):
-        return obj.to_user_account.name
+        if from_user_account == to_user_account:
+            raise ValidationError(
+                "The accounts involved are the same")
+
+        return data
