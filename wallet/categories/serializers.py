@@ -2,11 +2,10 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from .models import Category
-from authentication.serializers import UserEmailSerializer
 
 
 class CategorySerializer(serializers.ModelSerializer):
-    user = UserEmailSerializer(read_only=True)
+    user = serializers.EmailField(source='user.email', read_only=True)
 
     class Meta:
         model = Category

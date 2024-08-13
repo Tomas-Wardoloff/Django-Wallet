@@ -31,9 +31,3 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
         instance.save()
         return instance
-
-
-class UserEmailSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CustomUser
-        fields = ['email']
