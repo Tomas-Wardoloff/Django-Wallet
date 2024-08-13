@@ -11,8 +11,8 @@ from authentication.models import CustomUser
 from authentication.serializers import CustomUserSerializer
 from accounts.models import Account
 from accounts.serializers import AccountSerializer
-from transactions.models import Transaction
-from transactions.serializers import TransactionDetailSerializer, TransactionCreateSerializer
+from transactions.models import Transaction, Transfer
+from transactions.serializers import TransactionDetailSerializer, TransactionCreateSerializer, TransferDetailSerializer, TransferCreateSerializer
 from categories.models import Category
 from categories.serializers import CategorySerializer
 
@@ -81,3 +81,19 @@ class TransactionViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Transaction.objects.filter(user=self.request.user)
+
+
+class TransferViewSet(viewsets.ModelViewSet):
+    queryset = Transfer.objects.all()
+    permission_classes = [IsAuthenticated]
+
+    def get_serializer_class(self):
+        if self.action in ['create', 'update']:
+            return TransferCreateSerializer
+        return TransferDetailSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    def get_queryset(self):
+        return Transfer.objects.filter(user=self.request.user)
