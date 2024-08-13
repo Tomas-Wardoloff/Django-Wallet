@@ -11,8 +11,8 @@ from authentication.models import CustomUser
 from authentication.serializers import CustomUserSerializer
 from accounts.models import Account
 from accounts.serializers import AccountSerializer
-from transactions.models import Transfer, Transaction
-from transactions.serializers import TransactionSerializer, TransferSerializer
+from transactions.models import Transaction
+from transactions.serializers import TransactionDetailSerializer, TransactionCreateSerializer
 from categories.models import Category
 from categories.serializers import CategorySerializer
 
@@ -64,3 +64,20 @@ class CategoryViewSet(viewsets.ModelViewSet):
         if instance.user != self.request.user:
             raise PermissionDenied(
                 "User does not have permission to delete the category")
+        instance.delete()
+
+
+class TransactionViewSet(viewsets.ModelViewSet):
+    queryset = Transaction.objects.all()
+    permission_classes = [IsAuthenticated]
+
+    def get_serializer_class(self):
+        if self.action in ['create', 'update']:
+            return TransactionCreateSerializer
+        return TransactionDetailSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    def get_queryset(self):
+        return Transaction.objects.filter(user=self.request.user)
