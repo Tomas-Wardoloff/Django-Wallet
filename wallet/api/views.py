@@ -9,12 +9,17 @@ from rest_framework.permissions import IsAuthenticated
 
 from authentication.models import CustomUser
 from authentication.serializers import CustomUserSerializer
+
 from accounts.models import Account
 from accounts.serializers import AccountSerializer
+
+from transactions.filters import TransactionFilter
 from transactions.models import Transaction, Transfer
 from transactions.serializers import TransactionDetailSerializer, TransactionCreateSerializer, TransferDetailSerializer, TransferCreateSerializer
+
 from categories.models import Category
 from categories.serializers import CategorySerializer
+from categories.filters import CategoryFilter
 
 
 class CustomUserViewSet(viewsets.ModelViewSet):
@@ -53,6 +58,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = [IsAuthenticated]
+    filterset_class = CategoryFilter
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -70,6 +76,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
 class TransactionViewSet(viewsets.ModelViewSet):
     queryset = Transaction.objects.all()
     permission_classes = [IsAuthenticated]
+    filterset_class = TransactionFilter
 
     def get_serializer_class(self):
         if self.action in ['create', 'update']:
@@ -80,7 +87,8 @@ class TransactionViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
     def get_queryset(self):
-        return Transaction.objects.filter(user=self.request.user)
+        user = self.request.user
+        return super().get_queryset().filter(user=user)
 
 
 class TransferViewSet(viewsets.ModelViewSet):
