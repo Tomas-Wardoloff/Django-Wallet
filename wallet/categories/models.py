@@ -20,16 +20,15 @@ class Category(models.Model):
     Methods:
         __str__(): Returns a string representation of the income category.
     """
-    CATEGORY_TYPE = [
-        ('Income', 'Income'),
-        ('Expense', 'Expense'),
-    ]
-    
+    class CategoryType(models.TextChoices):
+        INCOME = 'Income', 'Income'
+        EXPENSE = 'Expense', 'Expense'
+
     name = models.CharField(max_length=50)
     user = models.ForeignKey(
         CustomUser, on_delete=models.CASCADE, blank=True, null=True)
-    type = models.CharField(max_length=7, choices=CATEGORY_TYPE)
-    
+    type = models.CharField(max_length=7, choices=CategoryType.choices)
+
     class Meta():
         db_table = 'categories'
         unique_together = ('user', 'name', 'type')
